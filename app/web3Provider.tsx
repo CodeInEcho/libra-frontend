@@ -6,10 +6,14 @@ import { siteConfig } from '@/config/site'
 import { setAccessToken } from '@/lib/token'
 import { FC, PropsWithChildren } from 'react'
 import { WagmiConfig, createConfig } from 'wagmi'
+import { mainnet, optimism, arbitrum, sepolia, base } from "wagmi/chains";
 import { ConnectKitProvider, SIWEConfig, SIWEProvider, getDefaultConfig } from 'connectkit'
+
+const chains = [mainnet, optimism, arbitrum, sepolia, base];
 
 const config = createConfig(
 	getDefaultConfig({
+    chains,
 		appName: siteConfig.name,
 		infuraId: process.env.NEXT_PUBLIC_INFURA_ID,
 		walletConnectProjectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID!,

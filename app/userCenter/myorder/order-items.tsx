@@ -49,6 +49,7 @@ export type OrderInfo = {
   }
   buyer: {
     id: string
+    wallet_address: string
   }
 }
 
@@ -143,9 +144,13 @@ export default function OrderItems({ item, order_type, labelValue, onUpdate }: O
                 <Link href={`/userCenter/myorderDetail/${item.id}`} rel="noreferrer" className={buttonVariants({ size: 'sm' })}>View Order</Link>
                 <OrderAction onUpdate={onUpdate} orderInfo={{
                   id: item.id,
+                  price: item.price,
                   status: item.status,
+                  quantity: item.quantity,
                   buyer_id: item.buyer.id,
                   seller_id: item.seller.id,
+                  buyer_address: item.buyer.wallet_address,
+                  seller_address: item.seller.wallet_address,
                 }}/>
                 <Button size="sm" variant="outline">···</Button>
               </div>

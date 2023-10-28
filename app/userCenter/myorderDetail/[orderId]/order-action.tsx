@@ -1,13 +1,95 @@
 "use client"
+import { ethers } from "ethers"
 import http from '@/lib/request'
+import { useSignTypedData } from 'wagmi'
 import Deliver from "@/components/deliver"
-import { useEffect, useState, useRef } from "react"
+import { LibraAbi } from "@/lib/libra-abi"
+import { writeContract } from '@wagmi/core'
 import { CardFooter } from "@/components/ui/card"
+import { useEffect, useState, useRef } from "react"
 import { buttonVariants } from "@/components/ui/button"
 
 export function OrderAction({ orderInfo, onUpdate, isCard = false }: any) {
   const childRef = useRef<any>(null);
   const [userId, setUserId] = useState('')
+
+  const domain = {
+    version: '1',
+    name: 'Payment',
+    chainId: 11155111,
+    verifyingContract: '0xd2ac4c716cc379be02fc49d0652b0bf0c9c0b821',
+  } as const
+
+  const types = {
+    OrderParams: [
+      {
+        name: "id",
+        type: "string",
+      },
+      {
+        name: "buyer",
+        type: "address",
+      },
+      {
+        name: "seller",
+        type: "address",
+      },
+      {
+        name: "price",
+        type: "uint256",
+      },
+      {
+        name: "quantity",
+        type: "uint256",
+      },
+      {
+        name: "feesRatio",
+        type: "uint256",
+      },
+      {
+        name: "securityDeposit",
+        type: "uint256",
+      },
+      {
+        name: "fundReleasePeriod",
+        type: "uint256",
+      },
+    ],
+  } as const
+   
+  const message = {
+    id: orderInfo.id,
+    price: ethers.parseEther(String(orderInfo.price)),
+    buyer: orderInfo.buyer_address,
+    seller: orderInfo.seller_address,
+    quantity: ethers.parseUnits(String(orderInfo.quantity), 'wei'),
+    feesRatio: ethers.parseUnits(String(2), 'wei'),
+    securityDeposit: ethers.parseUnits(String(0), 'wei'),
+    fundReleasePeriod: ethers.parseUnits(String(7), 'wei'),
+  } as const
+
+  const { signTypedData } =
+  useSignTypedData({
+    domain,
+    types,
+    message,
+    primaryType: 'OrderParams',
+    onSuccess: async (data) => {
+      const res = await http.post('/order/create-order-signature', {
+        order_id: orderInfo.id,
+        signature: data,
+      });
+      const amount = orderInfo.price * orderInfo.quantity;
+      const value = ethers.parseEther(String(amount + amount / 100));
+      const { hash } = await writeContract({
+        value: value,
+        abi: LibraAbi,
+        functionName: 'createOrder',
+        args: [message, res.data.data],
+        address: '0x0e135a67A80b962aCeD1a1035e6F33E8fC0ef215',
+      })
+    }
+  })
 
   useEffect(() => {
     try {
@@ -26,8 +108,15 @@ export function OrderAction({ orderInfo, onUpdate, isCard = false }: any) {
     childRef.current?.changeloading(true);
     http.post('/order/confirm-deliver', {
       order_id: orderInfo.id
-    }).then(() => {
-      onUpdate()
+    }).then(async (res) => {
+      const signature = res.data.data;
+      const { hash } = await writeContract({
+        abi: LibraAbi,
+        functionName: 'confirmDeliver',
+        args: [orderInfo.id, signature],
+        address: '0x0e135a67A80b962aCeD1a1035e6F33E8fC0ef215',
+      });
+      // onUpdate()
     }).finally(() => {
       cancel(false)
     })
@@ -37,8 +126,15 @@ export function OrderAction({ orderInfo, onUpdate, isCard = false }: any) {
     childRef.current?.changeloading(true);
     http.post('/order/confirm-receipt', {
       order_id: orderInfo.id
-    }).then(() => {
-      onUpdate()
+    }).then(async (res) => {
+      const signature = res.data.data;
+      const { hash } = await writeContract({
+        abi: LibraAbi,
+        functionName: 'confirmReceipt',
+        args: [orderInfo.id, signature],
+        address: '0x0e135a67A80b962aCeD1a1035e6F33E8fC0ef215',
+      });
+      // onUpdate()
     }).finally(() => {
       cancel(false)
     })
@@ -59,7 +155,7 @@ export function OrderAction({ orderInfo, onUpdate, isCard = false }: any) {
     <>
       {orderInfo.status === "Pending" && 
         <>
-          <div className={buttonVariants({ size: "sm" })}>Payment</div>
+          <div className={buttonVariants({ size: "sm" })} onClick={() => signTypedData()}>Payment</div>
           <Deliver 
           cRef={childRef}
           confirm={cancelOrder}

@@ -20,7 +20,8 @@ export default function collectionCreation() {
   const [newLogo, setNewLogo] = useState([] as ProductImages[]);
   const [newPicture, setNewPicture] = useState([] as ProductImages[]);
   const formSchema = z.object({
-    type: z.string().nonempty(),
+    type: z.coerce.number(),
+    fees_ratio: z.coerce.number(),
     collection_en: z.string().nonempty(),
     collection_cn: z.string().nonempty(),
     description_en: z.string().nonempty(),
@@ -32,9 +33,10 @@ export default function collectionCreation() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      type: 1,
       logo: '',
-      type: '1',
       picture: '',
+      fees_ratio: 2,
       collection_cn: '',
       collection_en: '',
       description_en: '',
@@ -76,7 +78,7 @@ export default function collectionCreation() {
                 <FormLabel>集合类型</FormLabel>
                 <FormControl>
                   <RadioGroup
-                  defaultValue={field.value}
+                  defaultValue={'1'}
                   onValueChange={field.onChange}
                   className="flex space-x-1">
                     {options.map((option) => (
@@ -121,6 +123,15 @@ export default function collectionCreation() {
                 <FormLabel>Collection</FormLabel>
                 <FormControl>
                   <Input placeholder="Please enter collection name" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}/>
+            <FormField control={form.control} name="fees_ratio" render={({ field }) => (
+              <FormItem>
+                <FormLabel>费率比列</FormLabel>
+                <FormControl>
+                  <Input type="number" placeholder="Please enter collection name" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

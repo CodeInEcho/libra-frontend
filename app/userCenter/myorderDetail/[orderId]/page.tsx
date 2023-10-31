@@ -63,7 +63,7 @@ export default function MyorderDetailPage({ params }: { params: { orderId: strin
             <div className="w-[8rem] h-[8rem] bg-[#eee]"></div>
             <div className="w-[8rem] h-[8rem] bg-[#eee]"></div>
           </CardContent>
-          <OrderAction isCard orderInfo={orderInfo}/>
+          { Object.keys(orderInfo).length && <OrderAction isCard orderInfo={orderInfo}/> }
         </Card>
         <CardTitle className="mb-4 mt-6">Order Info</CardTitle>
         <div className="text-sm">

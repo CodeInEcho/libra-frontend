@@ -35,6 +35,8 @@ export default function OfferCreation() {
 
   const FormSchema = z.object({
     images: z.string(),
+    release_period: z.boolean(),
+    security_deposit: z.boolean(),
     price: z.coerce.number().min(0),
     title: z.string().nonempty('Title is required.'),
     description: z.string().nonempty('Description is required.'),
@@ -56,6 +58,8 @@ export default function OfferCreation() {
       duration: '30',
       description: '',
       buyer_password: '',
+      release_period: false,
+      security_deposit: false,
     },
   })
 
@@ -304,27 +308,6 @@ export default function OfferCreation() {
                 </FormItem>
               )}
             />
-            {/* <FormField
-            name="delivery"
-            control={form.control}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Delivery</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value} >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select Product expiration date" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    { duration && Object.keys(duration).map(item => (
-                      <SelectItem  value="1">1 Days</SelectItem>
-                    )) }
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}/> */}
             <FormField
             name="buyer_password"
             control={form.control}
@@ -336,6 +319,34 @@ export default function OfferCreation() {
                 </FormLabel>
                 <FormControl>
                   {isDesignated && (<Input {...field} type="password" placeholder="Please set a purchase password"/>)}
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}/>
+            <FormField
+            name="security_deposit"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem className="flex justify-between">
+                <FormLabel className="flex items-center justify-between">
+                  <span>Security Deposit</span>
+                </FormLabel>
+                <FormControl>
+                  <Switch onCheckedChange={field.onChange} checked={field.value}/>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}/>
+            <FormField
+            name="release_period"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem className="flex justify-between">
+                <FormLabel className="flex items-center justify-between">
+                  <span>Delayed Release Period</span>
+                </FormLabel>
+                <FormControl>
+                  <Switch onCheckedChange={field.onChange} checked={field.value}/>
                 </FormControl>
                 <FormMessage />
               </FormItem>

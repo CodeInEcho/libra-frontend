@@ -1,8 +1,8 @@
-import loading from "@/public/Spin-1s-200px.gif"
-import { Button } from "@/components/ui/button"
 import Image from "next/image"
+import loading from "@/public/Spin-1s-200px.gif"
 
-export function CreateOrderStep_2() {
+export function CreateOrderStep_2({ orderInfo }: any) {
+
   return (
     <>
       <div className="flex items-center justify-center flex-col py-6">

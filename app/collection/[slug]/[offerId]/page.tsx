@@ -92,7 +92,11 @@ export default function IndexPage({ params }: { params: { offerId: string } }) {
               </div>
               <div className="text-[#6A6A6A] text-sm">stock: { offerInfo.stock - offerInfo.sold_count }</div>
             </div>
-            <ConfirmDialog offerId={offerId} price={offerInfo.price} quantity={quantity}><Button>Buy Now</Button></ConfirmDialog>
+            <ConfirmDialog orderInfo={{
+              quantity: quantity,
+              price: offerInfo.price,
+              seller_address: offerInfo.seller.wallet_address,
+            }} offerId={offerId} ><Button>Buy Now</Button></ConfirmDialog>
           </div>
         </div>
         <div className="border rounded-md p-4 w-[280px] flex flex-col items-center ml-[40px]">

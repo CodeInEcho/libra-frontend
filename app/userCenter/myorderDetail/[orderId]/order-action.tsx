@@ -56,7 +56,7 @@ export function OrderAction({ orderInfo, onUpdate, isCard = false }: any) {
       },
     ],
   } as const
-   
+
   const message = {
     id: orderInfo.id,
     price: ethers.parseEther(String(orderInfo.price)),

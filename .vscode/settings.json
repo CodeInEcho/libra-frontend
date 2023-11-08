@@ -1,5 +1,5 @@
 {
-  "editor.tabSize": 2,
+  "editor.tabSize": 4,
   "typescript.tsdk": "../../node_modules/.pnpm/typescript@4.9.5/node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "search.useIgnoreFiles": true

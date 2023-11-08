@@ -64,11 +64,6 @@ export default function OrderItems({ item, order_type, labelValue, onUpdate }: O
   const { toast } = useToast()
   const childRef = useRef<any>(null);
 
-  const cancel = (val: boolean) => {
-    childRef.current?.changeOpen(val);
-    childRef.current?.changeloading(false);
-  }
-
   const delist = async () => {
     childRef.current?.changeloading(true);
     const res = await http.post(`/offer/delist`, { offer_id: item.id })
@@ -87,6 +82,21 @@ export default function OrderItems({ item, order_type, labelValue, onUpdate }: O
     })
     toast({ duration: 2000, variant: "success", description: 'Uplist Success' });
     onUpdate();
+  }
+
+  const publishOffer = async () => {
+    childRef.current?.changeloading(true);
+    const res = await http.post(`/offer/admin-up-offer`, { offer_id: item.id })
+    .finally(() => {
+      cancel(false);
+    })
+    toast({ duration: 2000, variant: "success", description: 'publish Offer Success' });
+    onUpdate();
+  }
+
+  const cancel = (val: boolean) => {
+    childRef.current?.changeOpen(val);
+    childRef.current?.changeloading(false);
   }
 
   const cancelOrder = async () => {
@@ -159,6 +169,15 @@ export default function OrderItems({ item, order_type, labelValue, onUpdate }: O
               labelValue === '2' &&
               <div className='leading-[3.2rem] space-x-2'>
                 <Link href={`/collection/${item.collection.slug}/${item.id}`} rel="noreferrer" className={buttonVariants({ size: 'sm' })}>View Offer</Link>
+                { item.status === "Pending" && 
+                  <Deliver
+                  cRef={childRef}
+                  confirm={publishOffer}
+                  title="Are you sure to publish?"
+                  description="">
+                    <div className={buttonVariants({ size: "sm" })}>Publish Offer</div>
+                  </Deliver>
+                }
                 { item.status === "Listed" && 
                   <Deliver
                   cRef={childRef}

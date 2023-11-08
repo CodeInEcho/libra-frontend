@@ -60,8 +60,8 @@ export function throttle<T extends (...args: any[]) => void>(func: T, wait: numb
 
 export const offerType: { [key: number]: string } = {
   1: 'NFT',
-  2: 'GAME',
-  3: 'COIN',
+  2: 'COIN',
+  3: 'GAME',
 }
 
 export const duration: { [key: number]: string } = {

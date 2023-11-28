@@ -236,7 +236,7 @@ export default function OfferCreation() {
                                 <FormItem>
                                     <FormLabel>Price</FormLabel>
                                     <FormControl>
-                                        <Input className="w-[30rem]" min={0} step="0.01" type="number" placeholder="10" {...field} />
+                                        <Input className="w-[30rem]" type="number" placeholder="10" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>

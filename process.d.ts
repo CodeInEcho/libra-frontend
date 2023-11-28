@@ -4,5 +4,7 @@ declare namespace NodeJS {
     TWITTER_SECRET: string
     DISCORD_CLIENT_ID: string
     DISCORD_CLIENT_SECRET: string
+
+    LIBRA_CONTRACT: string
   }
 }
